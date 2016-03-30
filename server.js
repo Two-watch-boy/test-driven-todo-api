@@ -15,9 +15,9 @@ app.use(express.static(__dirname + '/public'));
 
 // our database is an array for now with some hardcoded values
 var todos = [
-  // { _id: 1, task: 'Laundry', description: 'Wash clothes' },
-  // { _id: 2, task: 'Grocery Shopping', description: 'Buy dinner for this week' },
-  // { _id: 3, task: 'Homework', description: 'Make this app super awesome!' }
+  { _id: 1, task: 'Laundry', description: 'Wash clothes' },
+  { _id: 2, task: 'Grocery Shopping', description: 'Buy dinner for this week' },
+  { _id: 3, task: 'Homework', description: 'Make this app super awesome!' }
 ];
 
 /**********
@@ -47,23 +47,34 @@ app.get('/api/todos/search', function search(req, res) {
   /* This endpoint responds with the search results from the
    * query in the request. COMPLETE THIS ENDPOINT LAST.
    */
+   res.json(200, {todos: todos});
 });
 
 app.get('/api/todos', function index(req, res) {
   /* This endpoint responds with all of the todos
    */
+   res.json(200, {todos: todos});
 });
 
 app.post('/api/todos', function create(req, res) {
   /* This endpoint will add a todo to our "database"
    * and respond with the newly created todo.
    */
+   var newTask = req.body.task;
+   var newDesc = req.body.description;
+   var newId = todos.length+1;
+   var newTaskObject = {_id: newId, task: newTask, description: newDesc};
+   todos.push(newTaskObject);
+   res.status(200).json( newTaskObject);
+
 });
 
 app.get('/api/todos/:id', function show(req, res) {
   /* This endpoint will return a single todo with the
    * id specified in the route parameter (:id)
    */
+   var id = req.params.id-1;
+   res.json(200, todos[id]);
 });
 
 app.put('/api/todos/:id', function update(req, res) {
@@ -71,6 +82,7 @@ app.put('/api/todos/:id', function update(req, res) {
    * id specified in the route parameter (:id) and respond
    * with the newly updated todo.
    */
+   res.json(200, {todos: todos});
 });
 
 app.delete('/api/todos/:id', function destroy(req, res) {
@@ -78,6 +90,9 @@ app.delete('/api/todos/:id', function destroy(req, res) {
    * id specified in the route parameter (:id) and respond
    * with success.
    */
+   var id = req.params.id-1;
+   todos.slice(id+1, 2);
+   res.json(200, {todos: todos});
 });
 
 /**********
